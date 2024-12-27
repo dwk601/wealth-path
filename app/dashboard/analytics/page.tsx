@@ -6,6 +6,7 @@ import { SpendingTrends } from "@/components/analytics/spending-trends";
 import { CategoryAnalysis } from "@/components/analytics/category-analysis";
 import { BudgetProgress } from "@/components/analytics/budget-progress";
 import { MonthlyComparison } from "@/components/analytics/monthly-comparison";
+import { MobileNavigationBar } from "@/components/dashboard/mobile-navigation-bar";
 
 export default function AnalyticsPage(): JSX.Element {
   return (
@@ -13,7 +14,7 @@ export default function AnalyticsPage(): JSX.Element {
       <DashboardSidebar />
       <div className="flex-1 flex flex-col overflow-hidden">
         <DashboardHeader />
-        <main className="flex-1 overflow-y-auto p-4">
+        <main className="flex-1 overflow-y-auto p-4 pb-16 md:pb-4">
           <h1 className="text-2xl font-bold mb-6">Financial Analytics</h1>
           <div className="grid gap-6 md:grid-cols-2">
             <SpendingTrends />
@@ -24,6 +25,7 @@ export default function AnalyticsPage(): JSX.Element {
             <MonthlyComparison />
           </div>
         </main>
+        <MobileNavigationBar />
       </div>
     </div>
   );

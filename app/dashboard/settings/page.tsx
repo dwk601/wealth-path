@@ -8,6 +8,7 @@ import { NotificationSettings } from "@/components/settings/notification-setting
 import { PreferenceSettings } from "@/components/settings/preference-settings";
 import { SecuritySettings } from "@/components/settings/security-settings";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import { MobileNavigationBar } from "@/components/dashboard/mobile-navigation-bar";
 
 type SettingsTab = "account" | "security" | "notifications" | "preferences";
 
@@ -19,7 +20,7 @@ export default function SettingsPage(): JSX.Element {
       <DashboardSidebar />
       <div className="flex-1 flex flex-col overflow-hidden">
         <DashboardHeader />
-        <main className="flex-1 overflow-y-auto p-6">
+        <main className="flex-1 overflow-y-auto p-6 pb-16 md:pb-6">
           <div className="max-w-4xl mx-auto">
             <h1 className="text-2xl font-bold mb-6">Settings</h1>
             <Tabs
@@ -49,6 +50,7 @@ export default function SettingsPage(): JSX.Element {
             </Tabs>
           </div>
         </main>
+        <MobileNavigationBar />
       </div>
     </div>
   );
