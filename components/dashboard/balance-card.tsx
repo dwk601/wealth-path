@@ -1,29 +1,35 @@
-"use client";
+"use client"
 
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { ArrowUpRight, ArrowDownRight } from "lucide-react";
+import { useTransactions } from '@/lib/hooks/use-transactions'
+import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
+import { formatCurrency } from '@/lib/utils'
 
-export const BalanceCard = (): JSX.Element => {
+export const BalanceCard = () => {
+  const { transactions, isLoading } = useTransactions("user-id") // Replace with actual user ID
+
+  const calculateBalance = (): number => {
+    return transactions.reduce((acc, curr) => {
+      const amount = parseFloat(curr.amount.toString())
+      return curr.type === 'EXPENSE' 
+        ? acc - amount 
+        : acc + amount
+    }, 0)
+  }
+
   return (
     <Card>
       <CardHeader>
         <CardTitle>Current Balance</CardTitle>
       </CardHeader>
       <CardContent>
-        <div className="space-y-4">
-          <div className="text-3xl font-bold">$24,563.00</div>
-          <div className="flex justify-between text-sm">
-            <div className="flex items-center text-green-600">
-              <ArrowUpRight className="h-4 w-4 mr-1" />
-              <span>Income: $3,400</span>
-            </div>
-            <div className="flex items-center text-red-600">
-              <ArrowDownRight className="h-4 w-4 mr-1" />
-              <span>Expenses: $2,100</span>
-            </div>
+        {isLoading ? (
+          <div className="h-8 w-24 bg-gray-200 animate-pulse rounded" />
+        ) : (
+          <div className="text-2xl font-bold">
+            {formatCurrency(calculateBalance())}
           </div>
-        </div>
+        )}
       </CardContent>
     </Card>
-  );
+  )
 }
