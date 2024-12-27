@@ -12,12 +12,6 @@ export const LandingHeader = (): JSX.Element => {
         </Link>
         <nav className="flex gap-4 sm:gap-6">
           <Link className="text-sm font-medium hover:underline underline-offset-4" href="#">
-            Features
-          </Link>
-          <Link className="text-sm font-medium hover:underline underline-offset-4" href="#">
-            Pricing
-          </Link>
-          <Link className="text-sm font-medium hover:underline underline-offset-4" href="#">
             About
           </Link>
           <Link className="text-sm font-medium hover:underline underline-offset-4" href="#">
