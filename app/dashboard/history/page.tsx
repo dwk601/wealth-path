@@ -4,6 +4,7 @@ import { DashboardHeader } from "@/components/dashboard/dashboard-header";
 import { DashboardSidebar } from "@/components/dashboard/dashboard-sidebar";
 import { TransactionHistory } from "@/components/history/transaction-history";
 import { MobileNavigationBar } from "@/components/dashboard/mobile-navigation-bar";
+import { AddTransactionButton } from "@/components/ui/add-transaction-button";
 
 export default function HistoryPage(): JSX.Element {
   return (
@@ -15,6 +16,7 @@ export default function HistoryPage(): JSX.Element {
           <h1 className="text-2xl font-bold mb-6">Transaction History</h1>
           <TransactionHistory />
         </main>
+        <AddTransactionButton />
         <MobileNavigationBar />
       </div>
     </div>

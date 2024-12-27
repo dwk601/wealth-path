@@ -6,6 +6,7 @@ import { BalanceCard } from "@/components/dashboard/balance-card";
 import { RecentTransactions } from "@/components/dashboard/recent-transactions";
 import { ExpenseSummary } from "@/components/dashboard/expense-summary";
 import { MobileNavigationBar } from "@/components/dashboard/mobile-navigation-bar";
+import { AddTransactionButton } from "@/components/ui/add-transaction-button";
 
 export default function DashboardPage(): JSX.Element {
   return (
@@ -22,6 +23,7 @@ export default function DashboardPage(): JSX.Element {
             <RecentTransactions />
           </div>
         </main>
+        <AddTransactionButton />
         <MobileNavigationBar />
       </div>
     </div>
