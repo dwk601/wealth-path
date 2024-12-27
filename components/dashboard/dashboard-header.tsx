@@ -2,6 +2,8 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
+import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Settings } from "lucide-react";
@@ -36,7 +38,18 @@ export const DashboardHeader = (): JSX.Element => {
   return (
     <header className="border-b bg-white px-4 py-3">
       <div className="flex items-center justify-between">
-        <h1 className="text-xl font-semibold">Dashboard</h1>
+        <Link 
+          href="/dashboard" 
+          className="relative h-10 w-12 transition-opacity hover:opacity-80"
+        >
+          <Image
+            src="/logo/logo.png"
+            alt="Wealth Path Logo"
+            fill
+            className="object-contain"
+            priority
+          />
+        </Link>
         <div className="flex items-center space-x-4">
           <NotificationsDropdown
             notifications={notifications}
