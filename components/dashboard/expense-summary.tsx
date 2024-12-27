@@ -1,54 +1,66 @@
 "use client";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { PieChart, Pie, ResponsiveContainer, Cell } from "recharts";
+import { useExpenseSummary } from "@/lib/hooks/use-expense-summary";
+import { useAuth } from "@/lib/hooks/use-auth";
+import { Skeleton } from "@/components/ui/skeleton";
 
-const data = [
-  { name: "Food", value: 400 },
-  { name: "Transportation", value: 300 },
-  { name: "Shopping", value: 300 },
-  { name: "Bills", value: 200 },
-];
+export function ExpenseSummary() {
+  const { user, isLoading: isAuthLoading } = useAuth();
+  const { summary, isLoading: isSummaryLoading, error } = useExpenseSummary(user?.id || "");
 
-const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042'];
+  const isLoading = isAuthLoading || isSummaryLoading;
 
-export const ExpenseSummary = (): JSX.Element => {
+  if (!user) {
+    return (
+      <Card>
+        <CardHeader>
+          <CardTitle>Expense Summary</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <p className="text-sm text-muted-foreground">Please sign in to view your expenses</p>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  if (error) {
+    return (
+      <Card>
+        <CardHeader>
+          <CardTitle>Expense Summary</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <p className="text-sm text-red-500">Failed to load expense summary</p>
+        </CardContent>
+      </Card>
+    );
+  }
+
   return (
     <Card>
       <CardHeader>
         <CardTitle>Expense Summary</CardTitle>
       </CardHeader>
       <CardContent>
-        <div className="h-[200px]">
-          <ResponsiveContainer width="100%" height="100%">
-            <PieChart>
-              <Pie
-                data={data}
-                innerRadius={60}
-                outerRadius={80}
-                paddingAngle={5}
-                dataKey="value"
-              >
-                {data.map((_, index) => (
-                  <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                ))}
-              </Pie>
-            </PieChart>
-          </ResponsiveContainer>
-        </div>
-        <div className="grid grid-cols-2 gap-4 mt-4">
-          {data.map((item, index) => (
-            <div key={item.name} className="flex items-center">
-              <div 
-                className="w-3 h-3 rounded-full mr-2"
-                style={{ backgroundColor: COLORS[index % COLORS.length] }}
-              />
-              <span className="text-sm text-gray-600">
-                {item.name}: ${item.value}
-              </span>
-            </div>
-          ))}
-        </div>
+        {isLoading ? (
+          <div className="space-y-2">
+            <Skeleton className="h-4 w-full" />
+            <Skeleton className="h-4 w-3/4" />
+            <Skeleton className="h-4 w-1/2" />
+          </div>
+        ) : (
+          <div className="space-y-4">
+            {summary.map((item) => (
+              <div key={item.category} className="flex items-center justify-between">
+                <span className="text-sm font-medium">{item.category}</span>
+                <span className="text-sm text-muted-foreground">
+                  ${item.amount.toFixed(2)}
+                </span>
+              </div>
+            ))}
+          </div>
+        )}
       </CardContent>
     </Card>
   );
