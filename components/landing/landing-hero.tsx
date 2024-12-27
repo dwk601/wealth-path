@@ -17,7 +17,7 @@ export const LandingHero = (): JSX.Element => {
           </div>
           <div className="space-x-4">
             <Button asChild>
-              <Link href="#">Get Started</Link>
+              <Link href="/dashboard">Get Started</Link>
             </Button>
             <Button variant="outline" asChild>
               <Link href="#">Learn More</Link>
