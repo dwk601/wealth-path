@@ -2,7 +2,43 @@ import { PrismaClient, TransactionType, BudgetPeriod, Prisma } from '@prisma/cli
 import { faker } from '@faker-js/faker'
 import { hash } from 'bcrypt'
 
-const prisma = new PrismaClient()
+const MAX_RETRIES = 5
+const INITIAL_BACKOFF = 1000 // 1 second
+
+const prisma = new PrismaClient({
+  datasources: {
+    db: {
+      url: process.env.DATABASE_URL
+    },
+  },
+  log: ['query', 'info', 'warn', 'error'],
+})
+
+const wait = (ms: number) => new Promise(resolve => setTimeout(resolve, ms))
+
+async function testConnection(attempt = 1): Promise<boolean> {
+  try {
+    console.log(`Connection attempt ${attempt} of ${MAX_RETRIES}...`)
+    await prisma.$connect()
+    
+    // Verify connection with a simple query
+    await prisma.$queryRaw`SELECT 1`
+    
+    console.log('✅ Successfully connected to the database')
+    return true
+  } catch (error) {
+    console.error(`❌ Connection attempt ${attempt} failed:`, error)
+    
+    if (attempt < MAX_RETRIES) {
+      const backoff = INITIAL_BACKOFF * Math.pow(2, attempt - 1)
+      console.log(`Retrying in ${backoff/1000} seconds...`)
+      await wait(backoff)
+      return testConnection(attempt + 1)
+    }
+    
+    return false
+  }
+}
 
 async function clearDatabase() {
   const tablenames = ['Transaction', 'Budget', 'Category', 'Settings', 'User']
@@ -19,6 +55,15 @@ async function clearDatabase() {
 }
 
 async function main() {
+  console.log('Starting database seed...')
+  console.log('Database URL:', process.env.DATABASE_URL?.replace(/:.+@/, ':****@'))
+  
+  // Test connection with retries
+  const isConnected = await testConnection()
+  if (!isConnected) {
+    throw new Error('Failed to connect to database after multiple attempts')
+  }
+
   try {
     // Clear existing data
     await clearDatabase()
@@ -134,16 +179,31 @@ async function main() {
 
     console.log('✅ Seed data created successfully!')
   } catch (error) {
-    console.error('❌ Error seeding database:', error)
+    if (error instanceof Prisma.PrismaClientKnownRequestError) {
+      console.error('Prisma Client Error:', {
+        code: error.code,
+        message: error.message,
+        meta: error.meta
+      })
+    } else {
+      console.error('Unknown error:', error)
+    }
     throw error
   }
 }
 
+// Increase timeout to 30 seconds
+const timeout = setTimeout(() => {
+  console.error('Operation timed out after 30 seconds')
+  process.exit(1)
+}, 30000)
+
 main()
   .catch((error) => {
-    console.error(error)
+    console.error('Failed to seed database:', error)
     process.exit(1)
   })
   .finally(async () => {
+    clearTimeout(timeout)
     await prisma.$disconnect()
   })
