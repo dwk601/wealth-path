@@ -52,7 +52,7 @@ export const DashboardHeader = (): JSX.Element => {
             <Settings className="h-5 w-5" />
           </Button>
           <Avatar>
-            <AvatarImage src="/avatars/user.png" alt="User" />
+            <AvatarImage src="/avatars/water_avatar.jpg" alt="User" />
             <AvatarFallback>UN</AvatarFallback>
           </Avatar>
         </div>
