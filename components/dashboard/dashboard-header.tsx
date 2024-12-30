@@ -8,6 +8,13 @@ import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Settings } from "lucide-react";
 import { NotificationsDropdown } from "@/components/notifications/notifications-dropdown";
+import { useSession, signOut } from "next-auth/react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 // Mock notifications - In a real app, this would come from an API
 const mockNotifications = [
@@ -26,6 +33,7 @@ const mockNotifications = [
 export const DashboardHeader = (): JSX.Element => {
   const router = useRouter();
   const [notifications, setNotifications] = useState(mockNotifications);
+  const { data: session } = useSession();
 
   const handleNotificationClick = (id: string) => {
     setNotifications((prev) => prev.filter((notif) => notif.id !== id));
@@ -33,6 +41,10 @@ export const DashboardHeader = (): JSX.Element => {
 
   const handleSettingsClick = () => {
     router.push("/dashboard/settings");
+  };
+
+  const handleSignOut = () => {
+    signOut({ callbackUrl: "/" });
   };
 
   return (
@@ -64,10 +76,30 @@ export const DashboardHeader = (): JSX.Element => {
           >
             <Settings className="h-5 w-5" />
           </Button>
-          <Avatar>
-            <AvatarImage src="/avatars/water_avatar.jpg" alt="User" />
-            <AvatarFallback>UN</AvatarFallback>
-          </Avatar>
+          {session?.user ? (
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Avatar className="cursor-pointer">
+                  <AvatarImage src="/avatars/water_avatar.jpg" alt="User" />
+                  <AvatarFallback>UN</AvatarFallback>
+                </Avatar>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuItem onClick={handleSignOut}>
+                  Logout
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          ) : (
+            <div className="flex space-x-2">
+              <Link href="/login" className="text-sm text-blue-600" tabIndex={0}>
+                Login
+              </Link>
+              <Link href="/signup" className="text-sm text-blue-600" tabIndex={0}>
+                Signup
+              </Link>
+            </div>
+          )}
         </div>
       </div>
     </header>
