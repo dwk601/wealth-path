@@ -6,7 +6,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Settings } from "lucide-react";
+import { Settings, LogIn, UserPlus } from "lucide-react"; // Add these imports
 import { NotificationsDropdown } from "@/components/notifications/notifications-dropdown";
 import { useSession, signOut } from "next-auth/react";
 import {
@@ -15,6 +15,12 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 // Mock notifications - In a real app, this would come from an API
 const mockNotifications = [
@@ -91,14 +97,44 @@ export const DashboardHeader = (): JSX.Element => {
               </DropdownMenuContent>
             </DropdownMenu>
           ) : (
-            <div className="flex space-x-2">
-              <Link href="/login" className="text-sm text-blue-600" tabIndex={0}>
-                Login
-              </Link>
-              <Link href="/signup" className="text-sm text-blue-600" tabIndex={0}>
-                Signup
-              </Link>
-            </div>
+            <TooltipProvider>
+              <div className="flex items-center space-x-2">
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Link href="/login">
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="hover:bg-slate-100"
+                        aria-label="Login"
+                      >
+                        <LogIn className="h-5 w-5" />
+                      </Button>
+                    </Link>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>Login</p>
+                  </TooltipContent>
+                </Tooltip>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Link href="/signup">
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="hover:bg-slate-100"
+                        aria-label="Sign up"
+                      >
+                        <UserPlus className="h-5 w-5" />
+                      </Button>
+                    </Link>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>Sign up</p>
+                  </TooltipContent>
+                </Tooltip>
+              </div>
+            </TooltipProvider>
           )}
         </div>
       </div>

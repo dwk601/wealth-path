@@ -1,7 +1,11 @@
 "use client"
+
 import { useState } from "react"
 import { useRouter } from "next/navigation"
-// ...existing imports...
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Input } from "@/components/ui/input"
+import { Button } from "@/components/ui/button"
+import Link from "next/link"
 
 const SignupPage = () => {
   const [email, setEmail] = useState("")
@@ -10,7 +14,6 @@ const SignupPage = () => {
 
   const handleSignup = async () => {
     try {
-      // ...basic form validation...
       const res = await fetch("/api/signup", {
         method: "POST",
         body: JSON.stringify({ email, password })
@@ -22,35 +25,58 @@ const SignupPage = () => {
   }
 
   return (
-    <main className="flex flex-col items-center justify-center">
-      <h1 className="text-2xl font-bold">Sign Up</h1>
-      <div className="flex flex-col mt-4">
-        <input
-          aria-label="Email"
-          type="email"
-          className="mb-2 p-2 border"
-          onChange={(e) => setEmail(e.target.value)}
-          value={email}
-          tabIndex={0}
-        />
-        <input
-          aria-label="Password"
-          type="password"
-          className="mb-2 p-2 border"
-          onChange={(e) => setPassword(e.target.value)}
-          value={password}
-          tabIndex={0}
-        />
-        <button
-          onClick={handleSignup}
-          onKeyDown={(e) => e.key === "Enter" && handleSignup()}
-          className="bg-blue-500 text-white px-4 py-2 rounded"
-          tabIndex={0}
-        >
-          Sign Up
-        </button>
-      </div>
-    </main>
+    <div className="flex h-screen bg-gray-100">
+      <main className="flex-1 flex items-center justify-center p-4">
+        <Card className="w-full max-w-md">
+          <CardHeader className="space-y-2">
+            <CardTitle className="text-3xl font-bold tracking-tight text-center">
+              Create Account
+            </CardTitle>
+            <p className="text-sm text-muted-foreground text-center">
+              Start your financial journey with Wealth Path
+            </p>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-4">
+              <div className="space-y-2">
+                <Input
+                  aria-label="Email"
+                  type="email"
+                  placeholder="Enter your email"
+                  onChange={(e) => setEmail(e.target.value)}
+                  value={email}
+                />
+              </div>
+              <div className="space-y-2">
+                <Input
+                  aria-label="Password"
+                  type="password"
+                  placeholder="Create a password"
+                  onChange={(e) => setPassword(e.target.value)}
+                  value={password}
+                />
+              </div>
+              <Button
+                onClick={handleSignup}
+                className="w-full font-semibold"
+                size="lg"
+              >
+                Create Account
+              </Button>
+              <p className="text-center text-sm text-muted-foreground">
+                Already have an account?{" "}
+                <Link 
+                  href="/login" 
+                  className="font-medium text-primary hover:underline underline-offset-4"
+                >
+                  Sign in
+                </Link>
+              </p>
+            </div>
+          </CardContent>
+        </Card>
+      </main>
+    </div>
   )
 }
 

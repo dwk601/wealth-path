@@ -1,8 +1,12 @@
 "use client"
+
 import { useState } from "react"
 import { signIn } from "next-auth/react"
 import { useRouter } from "next/navigation"
-// ...existing imports...
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Input } from "@/components/ui/input"
+import { Button } from "@/components/ui/button"
+import Link from "next/link"
 
 const LoginPage = () => {
   const [email, setEmail] = useState("")
@@ -19,35 +23,58 @@ const LoginPage = () => {
   }
 
   return (
-    <main className="flex flex-col items-center justify-center">
-      <h1 className="text-2xl font-bold">Log In</h1>
-      <div className="flex flex-col mt-4">
-        <input
-          aria-label="Email"
-          type="email"
-          className="mb-2 p-2 border"
-          onChange={(e) => setEmail(e.target.value)}
-          value={email}
-          tabIndex={0}
-        />
-        <input
-          aria-label="Password"
-          type="password"
-          className="mb-2 p-2 border"
-          onChange={(e) => setPassword(e.target.value)}
-          value={password}
-          tabIndex={0}
-        />
-        <button
-          onClick={handleLogin}
-          onKeyDown={(e) => e.key === "Enter" && handleLogin()}
-          className="bg-green-500 text-white px-4 py-2 rounded"
-          tabIndex={0}
-        >
-          Log In
-        </button>
-      </div>
-    </main>
+    <div className="flex h-screen bg-gray-100">
+      <main className="flex-1 flex items-center justify-center p-4">
+        <Card className="w-full max-w-md">
+          <CardHeader className="space-y-2">
+            <CardTitle className="text-3xl font-bold tracking-tight text-center">
+              Welcome back
+            </CardTitle>
+            <p className="text-sm text-muted-foreground text-center">
+              Continue managing your finances
+            </p>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-4">
+              <div className="space-y-2">
+                <Input
+                  aria-label="Email"
+                  type="email"
+                  placeholder="Enter your email"
+                  onChange={(e) => setEmail(e.target.value)}
+                  value={email}
+                />
+              </div>
+              <div className="space-y-2">
+                <Input
+                  aria-label="Password"
+                  type="password"
+                  placeholder="Enter your password"
+                  onChange={(e) => setPassword(e.target.value)}
+                  value={password}
+                />
+              </div>
+              <Button
+                onClick={handleLogin}
+                className="w-full font-semibold"
+                size="lg"
+              >
+                Sign in
+              </Button>
+              <p className="text-center text-sm text-muted-foreground">
+                New to Wealth Path?{" "}
+                <Link 
+                  href="/signup" 
+                  className="font-medium text-primary hover:underline underline-offset-4"
+                >
+                  Create an account
+                </Link>
+              </p>
+            </div>
+          </CardContent>
+        </Card>
+      </main>
+    </div>
   )
 }
 
