@@ -1,16 +1,25 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { PieChart, Pie, Cell, ResponsiveContainer, Legend, Tooltip } from "recharts";
-
-const mockData = [
-  { name: "Food", value: 400 },
-  { name: "Transport", value: 300 },
-  { name: "Shopping", value: 300 },
-  { name: "Bills", value: 200 },
-];
+import React, { useEffect, useState } from "react";
 
 const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042'];
 
 export const CategoryAnalysis = (): JSX.Element => {
+  const [categories, setCategories] = useState([]);
+
+  useEffect(() => {
+    const handleFetchCategories = async () => {
+      try {
+        const response = await fetch("/api/analytics/categories");
+        const data = await response.json();
+        setCategories(data);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    handleFetchCategories();
+  }, []);
+
   return (
     <Card>
       <CardHeader>
@@ -21,13 +30,13 @@ export const CategoryAnalysis = (): JSX.Element => {
           <ResponsiveContainer width="100%" height="100%">
             <PieChart>
               <Pie
-                data={mockData}
+                data={categories}
                 innerRadius={60}
                 outerRadius={80}
                 paddingAngle={5}
                 dataKey="value"
               >
-                {mockData.map((_, index) => (
+                {categories.map((_, index) => (
                   <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                 ))}
               </Pie>
