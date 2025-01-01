@@ -1,10 +1,10 @@
-import { NextResponse } from 'next/server'
-import prisma from '@/lib/prisma'
+import { db } from "@/lib/db";
+import { NextResponse } from "next/server";
 
 export async function POST(req: Request) {
   try {
-    const body = await req.json()
-    const budget = await prisma.budget.create({
+    const body = await req.json();
+    const budget = await db.budget.create({
       data: {
         userId: body.userId,
         categoryId: body.categoryId,
@@ -13,24 +13,33 @@ export async function POST(req: Request) {
         startDate: new Date(body.startDate),
         endDate: new Date(body.endDate)
       }
-    })
-    return NextResponse.json(budget)
+    });
+    return NextResponse.json(budget);
   } catch (error) {
-    return NextResponse.json({ error: 'Error creating budget' }, { status: 500 })
+    return NextResponse.json({ error: 'Error creating budget' }, { status: 500 });
   }
 }
 
 export async function GET(req: Request) {
   try {
-    const { searchParams } = new URL(req.url)
-    const userId = searchParams.get('userId')
-    
-    const budgets = await prisma.budget.findMany({
-      where: { userId: userId! },
-      include: { category: true }
-    })
-    return NextResponse.json(budgets)
+    const { searchParams } = new URL(req.url);
+    const userId = searchParams.get("userId");
+
+    if (!userId) {
+      return new NextResponse("User ID is required", { status: 400 });
+    }
+
+    const budgets = await db.budget.findMany({
+      where: { userId },
+      include: {
+        category: true
+      },
+      orderBy: { createdAt: "desc" }
+    });
+
+    return NextResponse.json(budgets);
   } catch (error) {
-    return NextResponse.json({ error: 'Error fetching budgets' }, { status: 500 })
+    console.error("[BUDGETS_GET]", error);
+    return new NextResponse("Internal Error", { status: 500 });
   }
 }
